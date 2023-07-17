@@ -1,0 +1,97 @@
+# wm independent hotkeys
+#
+
+# terminal emulator
+ctrl + alt + t
+	kitty
+
+# program launcher
+alt + @space
+	rofi -show drun
+
+# make sxhkd reload its configuration files:
+ctrl + Escape
+	pkill -USR1 -x sxhkd
+# flamshot
+F8
+	flameshot gui
+
+
+# File manager
+mod4 + e
+	nautilus --new-window ~
+# Lock screen
+mod4 + l
+	betterlockscreen -l blur
+#
+# bspwm hotkeys
+#
+
+# restart bspwm
+mod4 + alt + r
+	bspc wm -r
+
+# close node
+ctrl + alt + q
+	bspc node -c
+
+# Toogle node fullscreen
+mod4 + w
+	bspc node -t {fullscreen, tiled}
+
+# Toggle floating
+mod4 + d
+    if [ -z "$(bspc query -N -n focused.floating)" ]; then \
+        bspc node focused -t floating; \
+    else \
+        bspc node focused -t tiled; \
+    fi
+# Toggle Desktops
+mod4 + Tab
+	bspc desktop -f next
+
+#
+# focus/swap
+#
+
+# focus the last node/desktop
+mod4 + Tab
+	bspc desktop -f next.local
+
+mod4 + shift + Tab
+       bspc desktop -f prev.local
+
+# Send current node to the given desktop
+mod4 + {&,é,',(,-,è,_,ç,à}
+        bspc node --to-desktop '^{&,é,",',(,-,è,_,ç,à}'
+
+# swap the current node and the biggest node
+mod4 + g
+	bspc node -s biggest.local
+#
+# preselect
+#
+
+# preselect the direction
+mod4 + ctrl + {Left,Down,Up,Right}
+	bspc node -p {west,south,north,east}
+
+# preselect the ratio
+mod4 + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+# kill preselect
+mod4 + shift + q
+	bspc node -p cancel
+
+# focus the node in the given direction
+mod4 + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+# move/resize
+#
+
+# Expand/contract a window by moving one of its side outward/inward
+ctrl + alt + {Left,Down,Up,Right}
+    STEP=20; SELECTION={1,2,3,4}; \
+    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
+    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
